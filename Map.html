@@ -32,33 +32,22 @@
         //4.鼠标滚轮  开启鼠标滚轮缩放
         map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
 
-        //5.添加控件
-        //平移缩放控件 NavigationControl   PC端默认位于地图左上方，它包含控制地图的平移和缩放的功能
-        map.addControl(new BMap.NavigationControl());
-
-
         //比例尺 ScaleControl 默认位于地图左下方，显示地图的比例关系
         map.addControl(new BMap.ScaleControl());
 
-        //缩略地图 OverviewMapControl	默认位于地图右下方，是一个可折叠的缩略地图
-        map.addControl(new BMap.OverviewMapControl());
-
-        //地图类型	MapTypeControl	默认位于地图右上方
-        map.addControl(new BMap.MapTypeControl());
-        var opts = {
-            anchor: BMAP_ANCHOR_TOP_RIGHT, //位置
-            type: BMAP_NAVIGATION_CONTROL_SMALL //类型
-        }
-        map.addControl(new BMap.NavigationControl(opts));
+        // 添加缩放控件 无效中
+        // map.addControl(new BMap.NavigationControl());
+        var zoomCtrl = new BMapGL.ZoomControl();  // 添加缩放控件
+        map.addControl(zoomCtrl);
 
         //添加标注
-        // var myIcon = new BMapGL.Icon("D:/AAAA_文档/大三上期/软件工程",new BMapGL.Size(40,50));
+        //点坐标point创建
         var marker = new BMapGL.Marker(point);
         map.addOverlay(marker); // 将标注添加到地图中
 
         //添加监听事件
         marker.addEventListener("click", function() {
-            alert("您点击了标注");
+            // alert("您点击了标注"); 此处应为弹出打卡点图片
         });
 
 
