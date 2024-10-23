@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MapBoxDemo</title>
+
+    <!-- 引入mapbox -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+    
+    <!-- 引入语言的js文件 -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v1.0.0/mapbox-gl-language.js'></script>
+    <script src="./jiujiang.js"></script>
+    <script src="./jinghu.js"></script>
+    <script src="./textpoints.js"></script>
+    <style>
+        html{
+            width: 100vw;
+            height: 100vh;
+        }
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导入mapbox-gl -->
+    <div id='map' style='width: 100%; height: 100%;'></div>
+    <script>
+        // 初始化map地图
+        mapboxgl.accessToken = 'pk.eyJ1IjoiZnZ6dnpzdnJleiIsImEiOiJjbTJiaWgxY3IwbXlnMmlxeGlpNGc1cG4zIn0.2fBEaWiOxCFoohoyJl7LbQ';
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [120,30],
+            zoom: 10
+        });
+        // 设置中文
+        mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.1.0/mapbox-gl-rtl-text.js');
+        map.addControl(new MapboxLanguage({defaultLanguage: "zh-Hans"}));
+        //绘制区域
+        map.on('load', function () {
+            map.addLayer({
+                'id': 'jiujiang',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': jiujiangJSON
+                },
+                'layout': {},
+                'paint': {
+                'fill-color': '#088',
+                'fill-opacity': 0.4,
+                }
+            });
+            map.addLayer({
+                'id': 'jiujiangline',
+                'type': 'line',
+                'source': {
+                    'type': 'geojson',
+                    'data': jiujiangJSON
+                },
+                'layout': {},
+                'paint': {
+                    'line-color': 'blue',
+                    'line-width': 2
+                }
+            });
+            map.addLayer({
+                'id': 'jinghu',
+                'type': 'fill',
+                'source': {
+                    'type': 'geojson',
+                    'data': jinghuJSON
+                },
+                'layout': {},
+                'paint': {
+                'fill-color': '#088',
+                'fill-opacity': 0.4
+                }
+            });
+            map.addLayer({
+                'id': 'jinghuline',
+                'type': 'line',
+                'source': {
+                    'type': 'geojson',
+                    'data': jinghuJSON
+                },
+                'layout': {},
+                'paint': {
+                    'line-color': 'blue',
+                    'line-width': 2
+                }
+            });
+            // 点上图
+            map.loadImage('./site.png', function(error, image) {
+                if (error) throw error;
+	            map.addImage('pointImg', image);
+                map.addLayer({
+                    "id": "points",
+                    "type": "symbol",
+                    "source": {
+                        "type": "geojson",
+                        "data": pointsJSON
+                    },
+                    "layout": {
+                        "icon-image": "pointImg",
+                        "icon-size": 0.1
+                    }
+                });
+            });
+        });
+        fetch('/api/locations')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(marker => {
+                    const marker_on = new mapboxgl.Marker({
+                        color: '#ff0000', // 可以根据需要设置颜色
+                        anchor: "center",
+                        draggable: false,
+                    })
+                    .setLngLat([parseFloat(marker.pointLongitude), parseFloat(marker.pointLatitude)])
+                    .addTo(map);
+
+                    const popup = new mapboxgl.Popup({
+                        className: 'info',
+                        closeButton: false,
+                        closeOnClick: false,
+                        maxWidth: '200px'
+                    })
+                    .setLngLat([parseFloat(marker.pointLongitude), parseFloat(marker.pointLatitude)])
+                    .setHTML(marker.pointName)
+                    .addTo(map);
+                });
+            })
+            .catch(error => console.error('Error fetching locations:', error));
+    </script> 
+</body>
+</html>
