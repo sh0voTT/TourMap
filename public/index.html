@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TourMap</title>
+
+    <!-- 引入mapbox -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css' rel='stylesheet' />
+    
+    <!-- 引入语言的js文件 -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v1.0.0/mapbox-gl-language.js'></script>
+    <link rel="stylesheet" href="css/indexs.css">
+</head>
+<body>
+    <nav id="navbar">
+        <button id="loginButton" onclick="window.location.href='login.html'">登录</button>
+    </nav>
+    <!-- 导入mapbox-gl -->
+    <div id='map' style='width: 100%; height: 100%;'></div>
+    <script src="javascripts/reloaddata.js"></script>
+</body>
+</html>
